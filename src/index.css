@@ -1,0 +1,256 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-ar: 'Cairo', 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-en: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --color-primary: #f59e0b;
+  --color-primary-hover: #d97706;
+  --color-primary-foreground: #090b0e;
+
+  --color-surface: rgba(255, 255, 255, 0.05);
+  --color-surface-hover: rgba(255, 255, 255, 0.09);
+  --color-card: rgba(18, 22, 31, 0.85);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-foreground: #f8fafc;
+  --color-muted-foreground: #94a3b8;
+}
+
+@layer base {
+  :root {
+    --font-ar: 'Cairo', 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-en: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --bg-app: #0a0c10;
+    --text-app: #f1f5f9;
+  }
+
+  :root.light, html.light, .light {
+    --bg-app: #f8fafc;
+    --text-app: #0f172a;
+  }
+
+  * {
+    border-color: rgba(255, 255, 255, 0.08);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .light * {
+    border-color: rgba(203, 213, 225, 0.8);
+  }
+
+  body {
+    font-family: var(--font-ar);
+    overflow: hidden;
+    background-color: var(--bg-app);
+    color: var(--text-app);
+  }
+
+  /* POS terminal: keep canvas non-selectable, but always allow
+     text selection inside form fields for cashiers. */
+  input, textarea, select, [contenteditable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* Visible keyboard focus everywhere (cashier keyboard flows). */
+  :focus-visible {
+    outline: 2px solid rgba(245, 158, 11, 0.8);
+    outline-offset: 2px;
+  }
+
+  /* Respect users who prefer less motion (vestibular / low-power devices). */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Decode images off the main thread; skip offscreen work. */
+  img {
+    content-visibility: auto;
+  }
+
+  /* Scroll panels shouldn't chain-scroll the terminal shell. */
+  .custom-scrollbar {
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  [dir="ltr"] body {
+    font-family: var(--font-en);
+  }
+
+  .light body, html.light body {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+  }
+}
+
+/* Zero Sharp Corner Global Utilities & Ambient Glow */
+.glass-panel {
+  background: rgba(15, 19, 28, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.glass-panel-elevated {
+  background: rgba(20, 26, 38, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+}
+
+.light .glass-panel-elevated {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.08);
+}
+
+/* Global Universal Input & Textarea with Animated Glow Outline */
+input, textarea, select, .glass-input {
+  outline: none;
+  border-radius: 1rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+input:focus, textarea:focus, select:focus, .glass-input:focus {
+  border-color: rgba(245, 158, 11, 0.65) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 4px 16px rgba(245, 158, 11, 0.08) !important;
+  transform: translateY(-0.5px);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+.light .glass-input {
+  background: rgba(248, 250, 252, 0.95);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  color: #0f172a;
+}
+
+/* Global Select and Dropdown Menus (Rounded, No Sharp Corners) */
+select, .glass-select {
+  border-radius: 1rem;
+  background-color: rgba(18, 22, 31, 0.95);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.light select, .light .glass-select {
+  background-color: #ffffff;
+  color: #0f172a;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+}
+
+/* Custom Smooth Scrollbar with Rounded Ends */
+::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+}
+
+.light ::-webkit-scrollbar-thumb,
+.light .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.5);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.6);
+}
+
+.light ::-webkit-scrollbar-thumb:hover,
+.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(217, 119, 6, 0.7);
+}
+
+/* Electron Draggable Regions */
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Number font styling */
+.font-mono-numbers {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Global Root Color Scheme */
+:root {
+  color-scheme: light dark;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
