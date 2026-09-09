@@ -1,6 +1,15 @@
 # Changelog — Restaurant OS
 
-All notable changes. Format follows Keep a Changelog. Current version: **1.5.0**.
+All notable changes. Format follows Keep a Changelog. Current version: **1.5.1**.
+
+## [1.5.1] — 2026-09-09 — Branded icon + signing support
+
+- Branded app icon: generated `build/icon.ico` (16–256 px, amber flame on dark),
+  wired into the Windows installer (`win.icon`) and taskbar; new `favicon.svg`
+  for the web app (replaces default Vite icon).
+- Code signing: installer declares `signAndEditExecutable`; signing activates
+  automatically when `CSC_LINK` + `CSC_KEY_PASSWORD` are set on the build machine
+  (see README “Release signing”). Unsigned builds still work for internal testing.
 
 ## [1.5.0] — 2026-09-08 — Ship prep + wave-5 perf
 

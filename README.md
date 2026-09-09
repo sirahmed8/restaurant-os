@@ -55,6 +55,34 @@ firebase deploy --only hosting --project restaurantai1
 
 Live URL after deploy: `https://restaurantai1.web.app`
 
+## Desktop installer
+
+```bash
+npm run dist:win   # → release/Restaurant OS-Setup-1.0.0.exe
+```
+
+Branding: `build/icon.ico` (amber-flame mark) ships in the installer, taskbar,
+and window. Regenerate it with the script notes in `build/` if the brand changes.
+
+## Release signing (removes the SmartScreen warning)
+
+Why unsigned builds warn: Windows SmartScreen flags any installer it cannot tie to
+a verified publisher. The only real fix is signing with a purchased **OV code-signing
+certificate** (Sectigo/SSL.com/DigiCert, ~$70–400/yr, requires business-identity
+validation taking a few days). Self-signed certs do **not** remove the warning.
+
+The repo is already wired for it — no code change needed later:
+
+```powershell
+$env:CSC_LINK="C:\certs\restaurant-os.pfx"
+$env:CSC_KEY_PASSWORD="..."
+npm run dist:win
+```
+
+electron-builder picks up `CSC_LINK`/`CSC_KEY_PASSWORD` automatically and signs the
+`.exe`, the uninstaller, and the NSIS installer. After signing, SmartScreen
+reputation still needs a few dozen installs to go fully silent — expected.
+
 ## Key architecture decisions
 
 - **Offline-first:** every write hits IndexedDB + memory cache synchronously; `syncQueue`
