@@ -28,6 +28,9 @@ Thumbs.db
 # Electron builder cache
 .cache/
 
+# Firebase deploy cache
+.firebase/
+
 # Local tunnel binary (not source)
 cloudflared.exe
 
